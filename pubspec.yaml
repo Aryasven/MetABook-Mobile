@@ -1,0 +1,22 @@
+
+name: metabook_mobile
+description: A mobile version of Met·A·Book
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^2.0.0
+  firebase_auth: ^4.0.0
+  google_sign_in: ^6.0.0
+  cloud_firestore: ^4.0.0
+  phosphor_flutter: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/metabook_logo.png
