@@ -1,30 +1,54 @@
-
 import 'package:flutter/material.dart';
-import 'screens/welcome_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/profile_screen.dart';
-import 'theme/app_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:metabook_mobile/services/auth_service.dart';
+import 'package:metabook_mobile/routes/app_router.dart';
+import 'package:metabook_mobile/theme/app_theme.dart';
 
-void main() {
-  runApp(const MetABookApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase
+  await Firebase.initializeApp();
+  
+  runApp(const MyApp());
 }
 
-class MetABookApp extends StatelessWidget {
-  const MetABookApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Met·A·Book',
-      theme: AppTheme.lightTheme,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const WelcomeScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/profile': (context) => const ProfileScreen(),
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()),
+      ],
+      child: Consumer<AuthService>(
+        builder: (context, authService, _) {
+          return MaterialApp(
+            title: 'MetABook',
+            theme: ThemeData(
+              primarySwatch: Colors.deepPurple,
+              scaffoldBackgroundColor: Colors.grey[100],
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.deepPurple,
+                elevation: 0,
+              ),
+            ),
+            home: authService.isAuthenticated 
+                ? const HomeScreen() 
+                : const WelcomeScreen(),
+            routes: {
+              '/login': (context) => const LoginScreen(),
+              '/register': (context) => const RegisterScreen(),
+              '/home': (context) => const HomeScreen(),
+              '/shelves': (context) => const ShelvesScreen(),
+              '/add_books': (context) => const AddBooksScreen(),
+              '/profile': (context) => const ProfileScreen(),
+            },
+          );
+        },
+      ),
     );
   }
 }
